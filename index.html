@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>정산 계산기</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <style>
+      body {
+        font-family: 'Noto Sans KR', sans-serif;
+        min-height: 100dvh;
+        background-color: #F2F4F6;
+        color: #333D4B;
+      }
+      .quantity-input:focus,
+      .item-people-count:focus,
+      .item-price:focus,
+      .item-name-input:focus {
+        outline: none;
+        border-color: #3182F6;
+        box-shadow: 0 0 0 2px rgba(49, 130, 246, 0.2);
+      }
+      .toss-button {
+        background-color: #3182F6;
+        color: white;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        transition: background-color 0.2s;
+      }
+      .toss-button:hover {
+        background-color: #1B64DA;
+      }
+      .toss-secondary-button {
+        background-color: #E5E8EB;
+        color: #4E5968;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        transition: background-color 0.2s;
+      }
+      .toss-secondary-button:hover {
+        background-color: #D1D6DB;
+      }
+      .tab-active {
+        background-color: #FFFFFF;
+        color: #3182F6;
+        font-weight: 700;
+        border-bottom: 2px solid #3182F6;
+      }
+      .tab-inactive {
+        background-color: transparent;
+        color: #8B95A1;
+        font-weight: 500;
+        border-bottom: 2px solid transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
