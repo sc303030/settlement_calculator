@@ -232,14 +232,17 @@ const SettlementCalculator = () => {
                       </div>
                     </div>
                     <div className="flex items-center justify-between space-x-2">
-                      <input
-                        type="number"
-                        placeholder="금액"
-                        min="0"
-                        value={item.price}
-                        onChange={(e) => updateItem(item.id, 'price', parseFloat(e.target.value) || 0)}
-                        className="item-price flex-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm text-right"
-                      />
+                      <div className="relative flex-1">
+                        <input
+                          type="number"
+                          placeholder="단가"
+                          min="0"
+                          value={item.price}
+                          onChange={(e) => updateItem(item.id, 'price', parseFloat(e.target.value) || 0)}
+                          className="item-price w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm text-right"
+                          title="단가"
+                        />
+                      </div>
                       <div className="flex items-center space-x-1">
                         <button
                           className="p-1 text-gray-400 hover:text-gray-600 focus:outline-none bg-transparent"
@@ -266,7 +269,7 @@ const SettlementCalculator = () => {
                         </button>
                       </div>
                       <div className="w-24 text-right text-sm font-medium text-gray-700">
-                        {(item.price * item.quantity).toLocaleString()}원
+                        ₩ {(item.price * item.quantity).toLocaleString()}원
                       </div>
                     </div>
                   </div>
@@ -309,7 +312,7 @@ const SettlementCalculator = () => {
 
                 <div className="flex justify-between items-center text-base text-gray-700 mb-4">
                   <span>총 금액</span>
-                  <span className="font-bold text-lg">{totalAmount.toLocaleString()}원</span>
+                  <span className="font-bold text-lg">₩ {totalAmount.toLocaleString()}원</span>
                 </div>
                 <div className="space-y-2">
                   {Object.entries(amountPerPerson).map(([personNumber, amount]) => (
@@ -343,7 +346,7 @@ const SettlementCalculator = () => {
                                 <span className="text-gray-600">{item.quantity}개</span>
                               </div>
                               <div className="text-right text-gray-700">
-                                {(item.price * item.quantity).toLocaleString()}원
+                                ₩ {(item.price * item.quantity).toLocaleString()}원
                               </div>
                               <div className="text-xs text-gray-500 mt-1">
                                 참여: {item.selectedPeople.map(p => `${p}번`).join(', ')}
@@ -353,7 +356,7 @@ const SettlementCalculator = () => {
                           <div className="bg-white p-3 rounded-lg">
                             <div className="text-lg font-bold mb-2">총 금액</div>
                             <div className="text-right text-xl font-bold text-blue-600">
-                              {totalAmount.toLocaleString()}원
+                              ₩ {totalAmount.toLocaleString()}원
                             </div>
                           </div>
                           <div className="bg-white p-3 rounded-lg">
