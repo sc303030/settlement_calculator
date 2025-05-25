@@ -89,11 +89,17 @@ const SettlementCalculator = () => {
   const incrementNumPeople = () => {
     const newNumPeople = numPeople + 1;
     setNumPeople(newNumPeople);
-    setItems(items.map(item => ({
-      ...item,
-      peopleCount: newNumPeople,
-      selectedPeople: [...item.selectedPeople, newNumPeople]
-    })));
+    setItems(items.map(item => {
+      const newSelectedPeople = [...item.selectedPeople];
+      if (!newSelectedPeople.includes(newNumPeople)) {
+        newSelectedPeople.push(newNumPeople);
+      }
+      return {
+        ...item,
+        peopleCount: newSelectedPeople.length,
+        selectedPeople: newSelectedPeople.sort((a, b) => a - b)
+      };
+    }));
   };
 
   const decrementNumPeople = () => {
@@ -169,18 +175,22 @@ const SettlementCalculator = () => {
       </header>
 
       <main className="flex-grow w-full max-w-md mx-auto bg-white">
-        <div className="flex border-b border-gray-200">
+        <div className="flex p-4 gap-2">
           <button
-            className={`flex-1 py-3 px-4 text-center text-sm focus:outline-none ${
-              mode === 'direct' ? 'tab-active' : 'tab-inactive'
+            className={`flex-1 py-3 px-4 text-center text-sm rounded-xl transition-all ${
+              mode === 'direct' 
+                ? 'bg-blue-50 text-blue-600 font-bold' 
+                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
             }`}
             onClick={() => setMode('direct')}
           >
             직접 입력
           </button>
           <button
-            className={`flex-1 py-3 px-4 text-center text-sm focus:outline-none ${
-              mode === 'receipt' ? 'tab-active' : 'tab-inactive'
+            className={`flex-1 py-3 px-4 text-center text-sm rounded-xl transition-all ${
+              mode === 'receipt' 
+                ? 'bg-blue-50 text-blue-600 font-bold' 
+                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
             }`}
             onClick={() => setShowTodoModal(true)}
           >
@@ -204,72 +214,72 @@ const SettlementCalculator = () => {
             <>
               <div className="space-y-3 mb-6 min-w-full">
                 {items.map(item => (
-                  <div key={item.id} className="item p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
-                    <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                      <div className="flex-grow flex items-center gap-2 min-w-0">
+                  <div key={item.id} className="item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-4">
                         <input
                           type="text"
                           placeholder="항목 이름 (예: 저녁 식사)"
                           value={item.name}
                           onChange={(e) => updateItem(item.id, 'name', e.target.value)}
-                          className="item-name-input text-base font-medium flex-grow p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 min-w-0"
+                          className="item-name-input text-base font-medium flex-grow p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-0 bg-gray-50"
                         />
-                        <div className="flex items-center space-x-1 text-xs text-gray-500 shrink-0">
-                          <span className="material-icons text-lg text-gray-400">group</span>
+                        <div className="flex items-center space-x-2 ml-3">
                           <button
-                            className="p-1 text-gray-400 hover:text-gray-600 focus:outline-none bg-transparent"
+                            className="h-10 px-3 text-gray-400 hover:text-gray-600 focus:outline-none bg-gray-50 rounded-xl hover:bg-gray-100 flex items-center"
                             onClick={() => openPeopleModal(item.id)}
                           >
-                            <span className="text-sm font-medium">{item.peopleCount}명</span>
+                            <span className="material-icons text-lg">group</span>
+                            <span className="text-sm font-medium ml-1">{item.peopleCount}명</span>
+                          </button>
+                          <button
+                            className="h-10 w-10 text-red-500 hover:text-red-600 focus:outline-none bg-red-50 rounded-xl hover:bg-red-100 flex items-center justify-center"
+                            onClick={() => removeItem(item.id)}
+                          >
+                            <span className="material-icons text-lg">delete_outline</span>
                           </button>
                         </div>
-                        <button
-                          className="text-red-500 hover:text-red-600 focus:outline-none shrink-0"
-                          onClick={() => removeItem(item.id)}
-                        >
-                          <span className="material-icons text-xl">delete_outline</span>
-                        </button>
                       </div>
-                    </div>
-                    <div className="flex items-center justify-between space-x-2">
-                      <div className="relative flex-1">
-                        <input
-                          type="number"
-                          placeholder="단가"
-                          min="0"
-                          value={item.price}
-                          onChange={(e) => updateItem(item.id, 'price', parseFloat(e.target.value) || 0)}
-                          className="item-price w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm text-right"
-                          title="단가"
-                        />
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <button
-                          className="p-1 text-gray-400 hover:text-gray-600 focus:outline-none bg-transparent"
-                          onClick={() => {
-                            if (item.quantity > 1) {
-                              updateItem(item.id, 'quantity', item.quantity - 1);
-                            }
-                          }}
-                        >
-                          <span className="material-icons text-lg">remove_circle_outline</span>
-                        </button>
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) => updateItem(item.id, 'quantity', Math.max(1, parseInt(e.target.value) || 1))}
-                          className="item-quantity w-10 p-1 border border-gray-300 rounded-md text-center focus:ring-blue-500 focus:border-blue-500 text-sm quantity-input"
-                        />
-                        <button
-                          className="p-1 text-gray-400 hover:text-gray-600 focus:outline-none bg-transparent"
-                          onClick={() => updateItem(item.id, 'quantity', item.quantity + 1)}
-                        >
-                          <span className="material-icons text-lg">add_circle_outline</span>
-                        </button>
-                      </div>
-                      <div className="w-24 text-right text-sm font-medium text-gray-700">
-                        ₩ {(item.price * item.quantity).toLocaleString()}원
+                      <div className="flex items-center justify-between space-x-3">
+                        <div className="relative w-40">
+                          <input
+                            type="number"
+                            placeholder="단가"
+                            min="0"
+                            value={item.price}
+                            onChange={(e) => updateItem(item.id, 'price', parseFloat(e.target.value) || 0)}
+                            className="item-price w-full h-10 p-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-right bg-gray-50"
+                            title="단가"
+                          />
+                        </div>
+                        <div className="flex items-center space-x-1 bg-gray-50 rounded-xl p-0.5 h-10">
+                          <button
+                            className="h-8 w-8 text-gray-400 hover:text-gray-600 focus:outline-none bg-transparent rounded-lg hover:bg-gray-200 flex items-center justify-center p-0"
+                            onClick={() => {
+                              if (item.quantity > 1) {
+                                updateItem(item.id, 'quantity', item.quantity - 1);
+                              }
+                            }}
+                          >
+                            <span className="material-icons text-lg">remove_circle_outline</span>
+                          </button>
+                          <input
+                            type="number"
+                            min="1"
+                            value={item.quantity}
+                            onChange={(e) => updateItem(item.id, 'quantity', Math.max(1, parseInt(e.target.value) || 1))}
+                            className="item-quantity w-8 p-1 border-0 text-center focus:ring-0 focus:outline-none text-sm bg-transparent"
+                          />
+                          <button
+                            className="h-8 w-8 text-gray-400 hover:text-gray-600 focus:outline-none bg-transparent rounded-lg hover:bg-gray-200 flex items-center justify-center p-0"
+                            onClick={() => updateItem(item.id, 'quantity', item.quantity + 1)}
+                          >
+                            <span className="material-icons text-lg">add_circle_outline</span>
+                          </button>
+                        </div>
+                        <div className="w-40 h-10 text-right text-sm font-medium text-gray-700 bg-gray-50 p-2 rounded-xl flex items-center justify-end">
+                          ₩{(item.price * item.quantity).toLocaleString()}원
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -277,7 +287,7 @@ const SettlementCalculator = () => {
               </div>
 
               <button
-                className="w-full toss-secondary-button flex items-center justify-center text-sm mb-6"
+                className="w-full toss-secondary-button flex items-center justify-center text-sm mb-6 rounded-xl"
                 onClick={addItem}
               >
                 <span className="material-icons mr-1 text-base">add_circle_outline</span>
@@ -312,7 +322,7 @@ const SettlementCalculator = () => {
 
                 <div className="flex justify-between items-center text-base text-gray-700 mb-4">
                   <span>총 금액</span>
-                  <span className="font-bold text-lg">₩ {totalAmount.toLocaleString()}원</span>
+                  <span className="font-bold text-lg">₩{totalAmount.toLocaleString()}원</span>
                 </div>
                 <div className="space-y-2">
                   {Object.entries(amountPerPerson).map(([personNumber, amount]) => (
@@ -346,7 +356,7 @@ const SettlementCalculator = () => {
                                 <span className="text-gray-600">{item.quantity}개</span>
                               </div>
                               <div className="text-right text-gray-700">
-                                ₩ {(item.price * item.quantity).toLocaleString()}원
+                                ₩{(item.price * item.quantity).toLocaleString()}원
                               </div>
                               <div className="text-xs text-gray-500 mt-1">
                                 참여: {item.selectedPeople.map(p => `${p}번`).join(', ')}
@@ -356,7 +366,7 @@ const SettlementCalculator = () => {
                           <div className="bg-white p-3 rounded-lg">
                             <div className="text-lg font-bold mb-2">총 금액</div>
                             <div className="text-right text-xl font-bold text-blue-600">
-                              ₩ {totalAmount.toLocaleString()}원
+                              ₩{totalAmount.toLocaleString()}원
                             </div>
                           </div>
                           <div className="bg-white p-3 rounded-lg">
